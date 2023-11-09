@@ -1,0 +1,350 @@
+#include<iostream>
+#include<algorithm>
+#include<cmath>
+using namespace std;
+// declare class BSTNode
+template < class Type >
+class BSTNode {
+public:
+	Type data;
+	BSTNode* r; // represent the right
+	BSTNode* l; // represent the left
+	// default constructor to give r & l intiale values
+	BSTNode() {
+		r = nullptr;
+		l = nullptr;
+	}
+};
+// declaring class BSTFCI
+template < class Type >
+class BSTFCI {
+public:
+	// declare the root of the tree
+	BSTNode < Type >* root;
+	// default constructor to give rood pointer intiale value
+	BSTFCI() {
+		root = nullptr;
+	}
+
+	BSTFCI(Type value) {
+		root->data = value;
+		root->l = root->r;
+	}
+
+	// function to insert node to the tree
+	BSTNode < Type >* insertNode(Type value, BSTNode < Type >* node) {
+
+		// check if there is no node or not in case there is no node create a new node
+		if (node == nullptr){
+			node = new BSTNode < Type >;
+			node-> data = value;
+			node->l = node->r = nullptr;
+
+		}
+		 else if (value <= node->data) {
+			node->l = insertNode(value, node->l);
+		}
+
+		else if (value > node->data) {
+			node->r = insertNode(value, node->r);
+		}
+
+		return node;
+	}
+
+	// create function to call insert node function
+	void Push(Type value){
+		root = insertNode(value, root);
+	}
+//--------------------------------------------------------------------
+	// check if this tree is balanced tree or not
+	// first claculat the hight
+	template < class T >
+	friend int hight(BSTNode < T >* node);
+
+	// check if if the tree is balanced or not
+	template < class T >
+	friend bool isBalansed(BSTNode < T >* node);
+
+
+	// create function to compare between the sub tree and the original tree
+	template < class T >
+	friend bool compare(BSTNode < T >* node1, BSTNode < T >* node2);
+
+	// check the tree is subtree from another tree or not
+	template < class T >
+	friend bool isSubtree(BSTNode < T >* tree, BSTNode < T >* sub_tree);
+
+
+	// create function to print the node between specific rage
+	 template < class T >
+	 friend void printRange(BSTNode < T >* node, int Begin, int End);
+};
+
+// check if this tree is balanced tree or not
+
+// first clacult the hight
+template < class T >
+int hight(BSTNode < T >* node) {
+	if (node == nullptr) {
+		return 0; // In this case tree has only one node (rooted tree)
+	}
+	// hight of any node = max(left hight, right hight) + 1
+	int left_hight = hight(node->l); // calcult the left hight
+	int right_hight = hight(node->r); // calcult the right hight
+	return max(left_hight, right_hight) + 1;
+}
+
+// check if if the tree is balanced or not
+template < class T >
+bool isBalansed(BSTNode < T >* node) {
+	// declare two var to store the hight of th left and the hight of the right
+	int left_hight;
+	int right_hight;
+
+	if (node == nullptr) {
+		return true; // tree has only one node(roted tree)
+	}
+	// calcult the hight of right subtrees and left subtrees
+	left_hight = hight(node->l);
+	right_hight = hight(node->r);
+
+	// check it is balanced or not
+	// tree is balanced tree if the |hight(left) - hight(right)| <= 1
+	if (abs(left_hight - right_hight) <= 1 && isBalansed(node->l) && isBalansed(node->r)) {
+		return true;
+	}
+	// else if |hight(left)- hight(right)| > 1 then tree not balanced
+	return false;
+}
+
+// create function to compare between the sub tree and the original tree
+template < class T >
+bool compare(BSTNode < T >* node1, BSTNode < T >* node2) {
+	if ((node1 == nullptr) && (node2 == nullptr)) {
+		return true;
+	}
+	// two nodes not equal to each other
+	if ((node1 == nullptr) || (node2 == nullptr)) {
+		return false;
+	}
+
+	return(node1->data == node2->data   // check if two node are = or !=
+		&& compare(node1->l, node2->l)  // check if the left nodes are = or !=
+		&& compare(node1->r, node2->r)); // check if the right nodes are = or !=
+}
+
+// check the tree is subtree from another tree or not
+template < class T >
+bool isSubtree(BSTNode < T >* tree, BSTNode < T >* sub_tree) {
+	// base cases
+	if (tree == nullptr) {
+		return false;
+	}
+	if (sub_tree == nullptr) {
+		return true;
+	}
+	if (compare(tree, sub_tree)) {
+		return compare(tree, sub_tree);
+	}
+
+	return (isSubtree(tree->l, sub_tree) || (isSubtree(tree->r, sub_tree)));
+}
+
+template < class T >
+bool IsSubtree(BSTFCI < T >* tree1, BSTFCI < T >* tree2) {
+	return isSubtree(tree1->root, tree2->root);
+}
+
+// create function to print the node between specific rage
+template < class T >
+void printRange(BSTNode < T >* node, int Begin, int End) {
+	// base case (the end of the tree)
+	if (node == nullptr) {
+		return;
+	}
+	// searching for the Begin of the range
+
+	if (Begin < node->data) { // if true, then the range in the left subtree
+		printRange(node->l, Begin, End);
+	}
+	// print data of the node
+	if (Begin <= node->data && End >= node->data) {
+		cout << node-> data << ' ';
+	}
+
+	if (End > node->data) { // if true, the range in the right subtree
+		printRange(node->r, Begin, End);
+	}
+}
+// printing format---------------------------------------------------------------------------------
+void printLine(){
+cout << "\\*----------------------------------------------------*/\n";
+}
+void case1(){
+	cout << "Case 1:\n";
+}
+void case2(){
+	cout << "Case 2:\n";
+}
+void case3(){
+	cout << "Case 3:\n";
+}
+void case4(){
+	cout << "Case 4:\n";
+}
+void case5(){
+	cout << "Case 5:\n";
+}
+void case6(){
+	cout << "Case 6:\n";
+}
+//----------------------------------------------------------------------------------
+int main() {
+	// declare trees
+
+	BSTFCI < int >* tree1 = new BSTFCI < int >();
+	BSTFCI < int >* tree2 = new BSTFCI < int >();
+	BSTFCI < int >* tree3 = new BSTFCI < int >();
+	BSTFCI < int >* tree4 = new BSTFCI < int >();
+	BSTFCI < int >* tree5 = new BSTFCI < int >();
+	BSTFCI < int >* tree6 = new BSTFCI < int >();
+
+	// NOT Balanced tree
+	tree1->Push(14);
+	tree1->Push(8);
+	tree1->Push(3);
+	tree1->Push(34);
+	tree1->Push(20);
+	tree1->Push(10);
+	tree1->Push(40);
+	tree1->Push(19);
+	tree1->Push(18);
+
+	// Balanced tree
+	tree2->Push(6);
+	tree2->Push(4);
+	tree2->Push(3);
+	tree2->Push(6);
+	tree2->Push(9);
+
+	// NOT Balanced tree
+	tree3->Push(34);
+	tree3->Push(20);
+	tree3->Push(40);
+	tree3->Push(19);
+	tree3->Push(18);
+
+	// Balanced tree
+	tree4->Push(26);
+	tree4->Push(30);
+	tree4->Push(20);
+	tree4->Push(25);
+	tree4->Push(10);
+	tree4->Push(40);
+	tree4->Push(29);
+
+	//Balanced tree
+	tree5->Push(10);
+
+	tree6->Push(5);
+	tree6->Push(3);
+	tree6->Push(7);
+	tree6->Push(2);
+	tree6->Push(4);
+	tree6->Push(9);
+	tree6->Push(8);
+	tree6->Push(10);
+	tree6->Push(1);
+
+	BSTFCI < int >* subtree1 = new BSTFCI < int >();
+	subtree1->Push(9);
+	subtree1->Push(10);
+	subtree1->Push(8);
+
+	BSTFCI < int >* subtree2 = new BSTFCI < int >();
+	subtree2->Push(3);
+	subtree2->Push(4);
+	subtree2->Push(2);
+	subtree2->Push(1);
+
+	BSTFCI < int >* sp = new BSTFCI < int >();
+	sp->Push(8);
+	sp->Push(3);
+	sp->Push(10);
+
+	cout << "\nCheck the trees is Balanced or not\n";
+	case1();
+	// Tree 1 checking (false)
+	cout << (isBalansed(tree1->root)? "Tree 1 is balanced tree\n" : "Tree 1 is Unbalanced tree\n");
+	case2();
+	// Tree 2 checking(true)
+	cout << (isBalansed(tree2->root)? "Tree 2 is balanced tree\n" : "Tree 2 is Unbalanced tree\n");
+	case3();
+	// Tree 3 checking(false)
+	cout << (isBalansed(tree3->root)? "Tree 3 is balanced tree\n" : "\Tree 3 is Unbalanced tree\n");
+	case4();
+	// Tree 4 checking(True)
+	cout << (isBalansed(tree4->root)? "Tree 4 is balanced tree\n" : "Tree 4 is Unbalanced tree\n");
+	case5();
+	// Tree 5 checking(True)
+	cout << (isBalansed(tree5->root)? "Tree 5 is balanced tree\n" : "Tree 5 is Unbalanced tree\n");
+	printLine();
+
+	// check is tree sub tree from another tree or not
+	cout << "\nCheck the tree is subtree or not\n";
+	case1();
+	// True
+	cout << (IsSubtree(tree4,tree5)? "Tree 5 is subtree from tree 4\n" : "Tree 5 is not subtree from tree 4\n");
+	case2();
+	// false
+	cout << (IsSubtree(tree5,tree4)? "Tree 5 is subtree from tree 4\n" : "Tree 5 is not subtree from tree 4\n");
+	case3();
+	// true
+	cout << (IsSubtree(tree1,tree3)? "Tree 3 is subtree from tree 1\n" : "Tree 3 is not subtree from tree 1\n");
+	case4();
+	// false
+	cout << (IsSubtree(tree1,tree2)? "Tree 2 is subtree from tree 1\n" : "Tree 2 is not subtree from tree 1\n");
+	case5();
+	// true
+	cout << (IsSubtree(tree1,tree5)? "Tree 5 is subtree from tree 1\n" : "Tree 5 is not subtree from tree 1\n");
+	case6();
+	// true
+    cout << (IsSubtree(tree1,sp)? "Tree SP is subtree from tree 1\n" : "Tree SP is not subtree from tree 1\n");
+
+
+	cout << "\nGiven in the assignment: \n";
+	// true
+	cout << (IsSubtree(tree6,subtree1)? "Tree 7 is subtree from tree 6\n" : "Tree 7 is not subtree from tree 6\n");
+	// true
+	cout << (IsSubtree(tree6,subtree2)? "Tree 8 is subtree from tree 6\n" : "Tree 8 is not subtree from tree 6\n");
+
+
+	printLine();
+	cout << "Print range Tree 1\n";
+	case1();
+	// [3 8 10 14]
+	cout <<"[ "; printRange(tree1->root,3,14);
+	cout << "]\n";
+	case2();
+	// [3 4 5]
+	cout << "Print range Tree 6 (given in assignment)\n";
+	cout <<"[ "; printRange(tree6->root,3,6);
+	cout << "]\n";
+	case3();
+	// [8 9 10]
+	cout << "Print range Tree 6 (given in assignment)\n";
+	cout <<"[ "; printRange(tree6->root,8,15);
+	cout << "]\n";
+	case4();
+	// [ ]
+	cout << "Print range Tree 6 (given in assignment) \n";
+	cout <<"[ "; printRange(tree6->root,6,6);
+	cout << "]\n";
+	case5();
+	// [ 10 20 25 26]
+	cout << "Print range Tree 4\n";
+	cout <<"[ "; printRange(tree4->root,10,26);
+	cout << "]\n";
+
+}
